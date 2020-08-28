@@ -1,5 +1,6 @@
 package com.viewhigh.ftpserver.config;
 
+import com.viewhigh.ftpserver.consts.UsersConst;
 import org.apache.commons.io.IOUtils;
 import org.apache.ftpserver.DataConnectionConfigurationFactory;
 import org.apache.ftpserver.FtpServer;
@@ -57,7 +58,7 @@ public class MyFtpServer {
         FtpServerFactory serverFactory = new FtpServerFactory();
         ListenerFactory listenerFactory = new ListenerFactory();
         //1、设置服务端口
-        listenerFactory.setPort(3131);
+        listenerFactory.setPort(UsersConst.port);
         //2、设置被动模式数据上传的接口范围,云服务器需要开放对应区间的端口给客户端
         DataConnectionConfigurationFactory dataConnectionConfFactory = new DataConnectionConfigurationFactory();
         dataConnectionConfFactory.setPassivePorts("10000-10500");

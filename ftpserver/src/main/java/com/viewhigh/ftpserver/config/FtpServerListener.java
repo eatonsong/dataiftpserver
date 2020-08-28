@@ -16,30 +16,28 @@ public class FtpServerListener implements ServletContextListener {
     private static final Logger logger = LoggerFactory.getLogger(FtpServerListener.class);
     private static final String SERVER_NAME="FTP-SERVER";
 
-    @Autowired
-    private MyFtpServer server;
 
-    //容器关闭时调用方法stop ftpServer
+    //tomcat容器关闭时调用方法stop ftpServer
     public void contextDestroyed(ServletContextEvent sce) {
-//        WebApplicationContext ctx= WebApplicationContextUtils.getWebApplicationContext(sce.getServletContext());
-//        MyFtpServer server=(MyFtpServer)ctx.getServletContext().getAttribute(SERVER_NAME);
+        WebApplicationContext ctx= WebApplicationContextUtils.getWebApplicationContext(sce.getServletContext());
+        MyFtpServer server=(MyFtpServer)ctx.getServletContext().getAttribute(SERVER_NAME);
         server.stop();
         sce.getServletContext().removeAttribute(SERVER_NAME);
-        logger.info("Apache Ftp server is stoped!");
     }
 
-    //容器初始化调用方法start ftpServer
+    //spring 容器初始化调用方法startFtpServer
     public void contextInitialized(ServletContextEvent sce) {
-//        WebApplicationContext ctx= WebApplicationContextUtils.getWebApplicationContext(sce.getServletContext());
-//        MyFtpServer server=(MyFtpServer) ctx.getBean("MyFtp");
-        sce.getServletContext().setAttribute(SERVER_NAME,server);
+        WebApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(sce.getServletContext());
+        //spring boot 启动类中创建bean,命名为MyFtp()
+        MyFtpServer server = (MyFtpServer) ctx.getBean("MyFtp");
+        sce.getServletContext().setAttribute(SERVER_NAME, server);
         try {
-            //项目启动时已经加载好了
+            server.initFtp();
             server.start();
-            logger.info("Apache Ftp server is started!");
-        } catch (Exception e){
+
+        } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Apache Ftp server start failed!", e);
+            throw new RuntimeException("FTP启动失败", e);
         }
     }
 
